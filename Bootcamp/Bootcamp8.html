@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        #board { display: grid; grid-template: repeat(3, 1fr) / repeat(3, 1fr); width: 300px; height: 300px; gap: 5px; }
+        .cell { border: 1px solid; display: flex; align-items: center; justify-content: center; cursor: pointer; user-select: none; }
+        .cell.x::before { content: 'X'; }
+        .cell.o::before { content: 'O'; }
+    </style>
+</head>
+<body>
+
+<div id="board"></div>
+
+<script>
+var board = Array(9).fill(null);
+var currentPlayer = 'x';
+var gameOver = false;
+
+function checkWin() {
+    var lines = [
+        [0, 1, 2],
+        [3, 4, 5],
+        [6, 7, 8],
+        [0, 3, 6],
+        [1, 4, 7],
+        [2, 5, 8],
+        [0, 4, 8],
+        [2, 4, 6]
+    ];
+    for (var line of lines) {
+        if (board[line[0]] && board[line[0]] === board[line[1]] && board[line[0]] === board[line[2]]) {
+            return true;
+        }
+    }
+    return false;
+}
+
+document.getElementById('board').addEventListener('click', function(e) {
+    if (!e.target.classList.contains('cell') || gameOver) return;
+    var index = Array.from(e.target.parentNode.children).indexOf(e.target);
+    if (board[index]) return;
+    board[index] = currentPlayer;
+    e.target.classList.add(currentPlayer);
+    if (checkWin()) {
+        gameOver = true;
+        alert('Player ' + currentPlayer + ' wins!');
+    } else {
+        currentPlayer = currentPlayer === 'x' ? 'o' : 'x';
+    }
+});
+
+for (var i = 0; i < 9; i++) {
+    document.getElementById('board').appendChild(document.createElement('div')).className = 'cell';
+}
+</script>
+
+</body>
+</html>
